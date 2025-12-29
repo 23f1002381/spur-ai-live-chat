@@ -260,25 +260,31 @@ The backend follows a layered architecture pattern:
 ### Provider
 - **OpenAI GPT-3.5-turbo**: Cost-effective and fast for customer support use cases
 
+### Model Details
+- Model: `gpt-3.5-turbo`
+- Max Tokens: 500 (configurable via `MAX_TOKENS` env var)
+- Temperature: 0.7 (balanced creativity)
+
 ### Prompt Design
 
 The system prompt includes:
-- Role definition (helpful customer support agent)
-- Store information (shipping, returns, support hours, payment methods)
-- Behavioral guidelines (polite, helpful, admit when unsure)
+- Role definition (helpful customer support agent for e-commerce store)
+- Store information (shipping, returns, support hours, payment methods, international shipping)
+- Behavioral guidelines (polite, helpful, admit when unsure, offer human handoff)
 
 ### Conversation Context
 
 - Full conversation history is passed to the LLM for contextual responses
 - System prompt is prepended to every conversation
+- Messages are formatted as: `[{role: 'system'}, ...history, {role: 'user'}]`
 - Max tokens limited to 500 for cost control
 
 ### Error Handling
 
-- Handles API key errors (401)
-- Handles rate limits (429)
-- Handles service unavailability (503)
-- Graceful fallback messages for users
+- Handles API key errors (401) → User-friendly error message
+- Handles rate limits (429) → Retry suggestion
+- Handles service unavailability (503) → Graceful fallback
+- All errors return consistent format: `{status: 'error', message: '...', statusCode: number}`
 
 ## 🔒 Security & Best Practices
 
@@ -303,7 +309,61 @@ The system prompt includes:
 
 ## 🚢 Deployment
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions for both backend and frontend.
+### Recommended Architecture
+
+| Layer | Platform | Reason |
+|-------|----------|--------|
+| Frontend (Svelte) | **Vercel** | Excellent static hosting |
+| Backend (Node + Prisma) | **Render** | Persistent server + DB |
+| Database | SQLite (Render disk) | Simple & acceptable |
+
+### Deploy Backend on Render
+
+1. Go to [Render.com](https://render.com) → New → Web Service
+2. Connect your GitHub repository
+3. Configure:
+   - **Root Directory**: `/` (root of repo)
+   - **Build Command**: `npm install && npm run prisma:generate && npm run build:backend`
+   - **Start Command**: `npm start`
+   - **Environment**: Node 18+
+4. Add Environment Variables:
+   ```env
+   PORT=3000
+   NODE_ENV=production
+   OPENAI_API_KEY=your_key_here
+   DATABASE_URL=file:./prod.db
+   FRONTEND_URL=https://your-frontend-url.vercel.app
+   RATE_LIMIT_WINDOW_MS=900000
+   RATE_LIMIT_MAX_REQUESTS=100
+   MAX_MESSAGE_LENGTH=2000
+   MAX_TOKENS=500
+   ```
+5. Deploy and note your backend URL (e.g., `https://spur-ai-chat-backend.onrender.com`)
+
+### Deploy Frontend on Vercel
+
+1. Go to [Vercel.com](https://vercel.com) → New Project
+2. Import your GitHub repository
+3. Configure:
+   - **Framework**: Svelte
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. Add Environment Variable:
+   ```env
+   VITE_API_URL=https://your-backend-url.onrender.com/api
+   ```
+5. Deploy and note your frontend URL
+
+### Test Deployment
+
+1. Visit your deployed frontend URL
+2. Send a test message
+3. Verify AI response appears
+4. Refresh page - conversation should persist
+5. Test error handling (send empty message)
+
+For more detailed instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ## 📝 Trade-offs & Design Decisions
 

@@ -1,4 +1,6 @@
 {
+  // This tsconfig.json is for the backend TypeScript project only.
+  // Svelte files are in the frontend/ directory, which has its own tsconfig.json.
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
