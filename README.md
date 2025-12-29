@@ -84,13 +84,20 @@ cd ..
 
 ### Step 3: Database Setup
 
+We use SQLite with Prisma ORM.
+
 ```bash
 # Generate Prisma Client
 npm run prisma:generate
 
-# Run database migrations
+# Run database migrations (creates dev.db)
 npm run prisma:migrate
 ```
+
+**Database Details:**
+- Schema: `prisma/schema.prisma`
+- Migrations: `prisma/migrations/`
+- Database file: `prisma/dev.db` (created after first migration)
 
 ### Step 4: Run the Application
 
@@ -230,14 +237,16 @@ Health check endpoint.
 
 The backend follows a layered architecture pattern:
 
+**Flow**: Routes → Controllers → Services → Prisma
+
 1. **Routes Layer** (`routes/`): Defines API endpoints and applies middleware
 2. **Controllers Layer** (`controllers/`): Handles HTTP requests/responses, delegates to services
 3. **Services Layer** (`services/`): Contains business logic:
    - `chatService.ts`: Manages conversations and message persistence
-   - `llmService.ts`: Handles OpenAI API integration
+   - `llmService.ts`: Handles OpenAI API integration (LLM logic isolated for easy provider switching)
 4. **Data Layer** (`utils/prisma.ts`): Prisma client for database operations
 5. **Middleware** (`middleware/`):
-   - Error handling with global error handler
+   - Error handling via AppError + global error handler middleware
    - Rate limiting
    - Input validation
 
@@ -322,7 +331,7 @@ The system prompt includes:
 1. Go to [Render.com](https://render.com) → New → Web Service
 2. Connect your GitHub repository
 3. Configure:
-   - **Root Directory**: `/` (root of repo)
+   - **Root Directory**: `/` (root of repo - backend is at root level)
    - **Build Command**: `npm install && npm run prisma:generate && npm run build:backend`
    - **Start Command**: `npm start`
    - **Environment**: Node 18+
@@ -389,16 +398,16 @@ For more detailed instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 If I had more time, I would:
 
 1. **Backend**:
+   - **Streaming tokens** for real-time response display
+   - **Redis caching** for frequently asked questions
    - Add unit and integration tests
-   - Implement Redis caching for frequently asked questions
    - Add conversation analytics and metrics
-   - Implement streaming responses for better UX
    - Add support for multiple LLM providers (Claude, etc.)
    - Implement conversation search and filtering
 
 2. **Frontend**:
-   - Add message timestamps in a more readable format
-   - Implement message reactions/feedback
+   - Implement streaming response display
+   - Add message reactions/feedback
    - Add file upload support
    - Implement dark mode
    - Add accessibility improvements (ARIA labels, keyboard navigation)
@@ -412,6 +421,7 @@ If I had more time, I would:
    - Implement horizontal scaling
 
 4. **Features**:
+   - **Multi-channel abstraction** (WhatsApp, Instagram, Facebook)
    - Multi-language support
    - Handoff to human agents
    - Conversation export
