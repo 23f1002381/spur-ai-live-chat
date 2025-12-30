@@ -13,7 +13,12 @@ export const validateChatMessage = [
     .withMessage(`Message cannot exceed ${MAX_MESSAGE_LENGTH} characters`),
   body('sessionId')
     .optional()
-    .isString()
+    .custom((value) => {
+      if (value === null || value === undefined || value === '') {
+        return true; // Allow null, undefined, or empty string
+      }
+      return typeof value === 'string';
+    })
     .withMessage('Session ID must be a string'),
 ];
 

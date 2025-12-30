@@ -1,11 +1,17 @@
+import 'dotenv/config';   // 👈 MUST be first
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import chatRoutes from './routes/chatRoutes';
 import { errorHandler } from './middleware/errorHandler';
 import { rateLimiter } from './middleware/rateLimiter';
 
-dotenv.config();
+
+// Warn if GROQ key is missing in non-dev environments so issues are visible in logs
+if (!process.env.GROQ_API_KEY && !process.env.GROQ_API && !process.env.GROQ_API_TOKEN && !process.env.GROQ_KEY) {
+  if ((process.env.NODE_ENV || 'development') !== 'development') {
+    console.warn('⚠️ GROQ API key not found. Set GROQ_API_KEY (or GROQ_API/GROQ_API_TOKEN/GROQ_KEY) for the AI provider to work in production.');
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,6 +20,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use(express.json({ limit: '10mb' }));

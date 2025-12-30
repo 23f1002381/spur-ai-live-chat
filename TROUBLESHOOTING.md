@@ -76,7 +76,8 @@ VITE v5.x.x  ready in xxx ms
 
 **Backend `.env` file should have:**
 ```env
-OPENAI_API_KEY=your_actual_key_here
+# Add your API key here (do NOT commit secrets to the repo)
+OPENAI_API_KEY=REPLACE_WITH_YOUR_KEY
 DATABASE_URL="file:./dev.db"
 PORT=3000
 FRONTEND_URL=http://localhost:5173
@@ -100,13 +101,15 @@ VITE_API_URL=http://localhost:3000/api
 
 #### Issue: Messages appear but no AI response
 
-**Cause:** OpenAI API key issue or backend error
+**Cause:** AI provider API key issue or backend error
 
 **Solution:**
 1. Check backend terminal for errors
-2. Verify `OPENAI_API_KEY` in `.env` is correct
-3. Check OpenAI account has credits
+2. Verify `OPENAI_API_KEY` or `GROQ_API_KEY` in `.env` is correct (this project uses GROQ by default)
+3. Check provider account has credits
 4. Look at browser console for error messages
+
+**Note:** If you see `AI provider misconfigured: GROQ_API_KEY is missing` the server is telling you no GROQ key is set. In **development** the server will fall back to a harmless local mock so you can continue testing; in **production** you must set one of the following env vars: `GROQ_API_KEY`, `GROQ_API`, `GROQ_API_TOKEN`, or `GROQ_KEY`.
 
 #### Issue: "CORS error"
 

@@ -28,7 +28,8 @@ This guide covers deploying both the backend and frontend of the Spur AI Live Ch
    DATABASE_URL=file:./prod.db
    NODE_ENV=production
    PORT=3000
-   OPENAI_API_KEY=your_openai_api_key_here
+   # Replace with a real key in your deployment dashboard (do NOT commit secrets)
+   OPENAI_API_KEY=REPLACE_WITH_OPENAI_API_KEY
    RATE_LIMIT_WINDOW_MS=900000
    RATE_LIMIT_MAX_REQUESTS=100
    FRONTEND_URL=https://your-frontend-url.vercel.app
@@ -66,7 +67,7 @@ This guide covers deploying both the backend and frontend of the Spur AI Live Ch
    ```bash
    heroku config:set DATABASE_URL=file:./prod.db
    heroku config:set NODE_ENV=production
-   heroku config:set OPENAI_API_KEY=your_key
+   heroku config:set OPENAI_API_KEY=REPLACE_WITH_OPENAI_API_KEY
    # ... add all other env vars
    ```
 
@@ -170,7 +171,7 @@ This guide covers deploying both the backend and frontend of the Spur AI Live Ch
 DATABASE_URL=file:./prod.db  # or PostgreSQL URL for production
 NODE_ENV=production
 PORT=3000
-OPENAI_API_KEY=sk-...
+GROQ_API_KEY=your_groq_api_key_here
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
 FRONTEND_URL=https://your-frontend-url.vercel.app

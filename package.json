@@ -15,17 +15,23 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio"
   },
-  "keywords": ["ai", "chat", "llm", "support"],
+  "keywords": [
+    "ai",
+    "chat",
+    "llm",
+    "support"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^5.7.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.6.1",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
     "express-validator": "^7.0.1",
-    "openai": "^4.20.1"
+    "groq-sdk": "^0.37.0",
+    "openai": "^4.104.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -37,6 +43,3 @@
     "typescript": "^5.3.3"
   }
 }
-
-
-
